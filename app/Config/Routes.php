@@ -16,11 +16,12 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php'))
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
+$routes->setDefaultController('Login_Controller');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
 $routes->setAutoRoute(true);
+
 
 /**
  * --------------------------------------------------------------------
@@ -30,7 +31,9 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->post('login/verificar', 'Login_Controller::verificarCredenciais');
+$routes->get('login/sucesso', 'Grid_Controller::index',['as' => 'gridRoute']);
+$routes->get('/', 'Login_controller::index');
 
 /**
  * --------------------------------------------------------------------
