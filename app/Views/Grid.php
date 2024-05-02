@@ -143,7 +143,7 @@
                     <a class="nav-link" href="#">Olá, <?= session('usuario_nome') ?></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('login/logout') ?>">Deslogar</a>
+                    <a class="nav-link logout" href="<?= base_url('login/logout') ?>">Deslogar</a>
                 </li>
             </ul>
         </div>
@@ -151,13 +151,17 @@
 </nav>
 
 <?php if(session()->getFlashdata('status')): ?>
-    <div id="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-        <span><i class="fas fa-check-circle"></i></span>
-        <span><strong>Sucesso!</strong> <?= session()->getFlashdata('status') ?></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+    <div id="successMessage" class="toast align-items-center text-white bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Sucesso!</strong> <?= session()->getFlashdata('status') ?>
+            </div>
+        </div>
     </div>
 <?php endif; ?>
+
+
 <div class="container mt-5 fade-in">
     <h1 class="mb-4 text-center">Lista de Protocolos Recebidos</h1>
     <button class="btn btn-add btn-download-all">Baixar Tudo</button>
@@ -183,7 +187,7 @@
                     <button class="btn btn-action btn-view"><i class="fas fa-eye"></i></button>
                     <button class="btn btn-action btn-download"><i class="fas fa-download"></i></button>
                     <!-- Adicionando a classe "delete-protocol" e o data-id com o ID do protocolo -->
-                    <a href="<?=base_url('login/delete/'.$protocolo['protocol_id']) ?>" class="btn btn-action btn-delete delete-protocol" data-id="<?= $protocolo['protocol_id'] ?>"><i class="fas fa-trash-alt"></i></a>
+                    <a href="<?=base_url('login/delete/'.$protocolo['protocol_id']) ?>" class="btn btn-action btn-delete delete-protocol"><i class="fas fa-trash-alt"></i></a>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -226,7 +230,6 @@
         // Adiciona um efeito de pulso ao clicar no botão "Adicionar Protocolo"
         $('.delete-protocol').on('click', function(e) {
             e.preventDefault();
-            var protocolId = $(this).data('id');
             Swal.fire({
                 title: 'Tem certeza?',
                 text: "Você realmente deseja excluir este protocolo?",
@@ -235,6 +238,25 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Se confirmado, redirecione para a URL de exclusão
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        });
+
+        $('.logout').on('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Você realmente deseja sair do sistema?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
