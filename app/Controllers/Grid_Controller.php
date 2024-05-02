@@ -2,17 +2,22 @@
 
 namespace App\Controllers;
 
-use App\Models\Usuario_model;
+use App\Models\Grid_Model;;
 use CodeIgniter\Controller;
 
 class Grid_Controller extends Controller {
 
     public function index() {
-        return view("Grid");
+        $gridModel = new Grid_Model();
+        $data['protocolosrecebidos'] = $gridModel->getAllProtocolos();
+        return view("Grid",$data);
     }
 
-    public function verificarCredenciais() {
-
+    public function delete($id)
+    {
+        $protocoloModel = new Grid_Model();
+        $protocoloModel->deleteProtocolo($id);
+        return redirect()->to(base_url('Grid'));
     }
 
 }

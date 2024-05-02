@@ -31,9 +31,16 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
+/** @var RouteCollectionInterface $routes */
+$routes->group('', ['filter' => 'auth'], function ($routes) {
+	$routes->get('login/sucesso', 'Grid_Controller::index');
+	$routes->get('login/logout', 'Login_Controller::logout');
+});
+$routes->get('protocolo/delete/(:num)', 'Grid_Controller::delete/$1');
 $routes->post('login/verificar', 'Login_Controller::verificarCredenciais');
-$routes->get('login/sucesso', 'Grid_Controller::index',['as' => 'gridRoute']);
 $routes->get('/', 'Login_controller::index');
+$routes->get('form', 'Form_Controller::index');
+
 
 /**
  * --------------------------------------------------------------------

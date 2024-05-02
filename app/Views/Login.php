@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,21 @@
             height: 100vh;
             margin: 0;
         }
+
+        .logout-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #28a745;
+        color: #fff;
+        font-size: 16px;
+        display: none;
+        z-index: 1000;
+    }
+
         .login-container {
             background-color: #fff;
             border-radius: 8px;
@@ -24,10 +40,12 @@
             width: 100%;
             text-align: center;
         }
+
         .login-container h2 {
             margin-bottom: 30px;
             color: #333;
         }
+
         .login-container input[type="text"],
         .login-container input[type="password"] {
             width: 100%;
@@ -37,6 +55,7 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+
         .login-container button {
             background-color: #4CAF50;
             color: white;
@@ -48,9 +67,11 @@
             width: 100%;
             font-size: 16px;
         }
+
         .login-container button:hover {
             background-color: #45a049;
         }
+
         .login-container .forgot-password {
             color: #666;
             font-size: 14px;
@@ -58,12 +79,21 @@
             margin-top: 10px;
             display: inline-block;
         }
+
         .error-message {
             color: red;
         }
     </style>
 </head>
+
 <body>
+    <div class="container">
+        <!-- Exibir a mensagem de logout, se existir -->
+        <div id="logoutMessage" class="logout-message"></div>
+
+
+        <!-- Conteúdo do menu -->
+    </div>
     <div class="login-container">
         <h2>Login</h2>
         <form action="<?= base_url('login/verificar') ?>" method="post">
@@ -71,9 +101,29 @@
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
         </form>
-        <?php if (isset($error_message)): ?>
+        <?php if (isset($error_message)) : ?>
             <p class="error-message"><?= $error_message ?></p>
         <?php endif; ?>
     </div>
 </body>
+
+<script>
+    // Função para mostrar a mensagem de logout
+    function showLogoutMessage(message) {
+        var logoutMessage = document.getElementById('logoutMessage');
+        logoutMessage.innerHTML = message;
+        logoutMessage.style.display = 'block';
+
+        // Esconde a mensagem após 7 segundos
+        setTimeout(function() {
+            logoutMessage.style.display = 'none';
+        }, 7000);
+    }
+
+    // Exemplo de uso
+    <?php if (isset($logout_message)) : ?>
+        showLogoutMessage('<?= $logout_message ?>');
+    <?php endif; ?>
+</script>
+
 </html>
