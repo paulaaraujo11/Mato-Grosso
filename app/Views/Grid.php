@@ -8,11 +8,12 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Adicione os estilos do SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         /* Estilos personalizados */
         body {
             background-color: #f0f0f0;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://source.unsplash.com/random/1920x1080');
             background-size: cover;
             background-position: center;
             color: #fff;
@@ -21,7 +22,7 @@
             padding: 0;
         }
         .container {
-            max-width: 800px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
             background-color: rgba(0, 0, 0, 0.7);
@@ -89,6 +90,44 @@
             transform: translateY(-3px);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
+        #successMessage {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 300px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #4caf50; /* Cor verde vibrante */
+            color: #fff;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            animation: slideInRight 0.5s ease forwards, fadeOut 0.5s ease 5s forwards;
+        }
+
+        #successMessage span {
+            margin-right: 10px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -110,80 +149,101 @@
         </div>
     </div>
 </nav>
-    <div class="container mt-5 fade-in">
-        <h1 class="mb-4 text-center">Lista de Protocolos Recebidos</h1>
-        <button class="btn btn-add btn-download-all">Baixar Tudo</button>
-        <table id="protocolos_table" class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Matricula</th>
-                    <th>Nome</th>
-                    <th>CPF</th>
-                    <th>Situação</th>
-                    <th>Ações</th> <!-- Nova coluna para as ações -->
-                </tr>
-            </thead>
-            <tbody>        
-                <?php foreach ($protocolosrecebidos as $protocolo): ?>
-                    <tr>
-                        <td><?= $protocolo['protocol_id'] ?></td>
-                        <td><?= $protocolo['protocol_matricula'] ?></td>
-                        <td><?= $protocolo['protocol_nome'] ?></td>
-                        <td><?= $protocolo['protocol_cpf'] ?></td>
-                        <td><?= $protocolo['protocol_situacaoprofissional'] ?></td>
-                        <td>
-                            <button class="btn btn-action btn-view"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-action btn-download"><i class="fas fa-download"></i></button>
-                            <button class="btn btn-action btn-delete" data-id="<?= $protocolo['protocol_id'] ?>"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+
+<?php if(session()->getFlashdata('status')): ?>
+    <div id="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span><i class="fas fa-check-circle"></i></span>
+        <span><strong>Sucesso!</strong> <?= session()->getFlashdata('status') ?></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+    </div>
+<?php endif; ?>
+<div class="container mt-5 fade-in">
+    <h1 class="mb-4 text-center">Lista de Protocolos Recebidos</h1>
+    <button class="btn btn-add btn-download-all">Baixar Tudo</button>
+    <table id="protocolos_table" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Matricula</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Situação</th>
+            <th>Ações</th> <!-- Nova coluna para as ações -->
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($protocolosrecebidos as $protocolo): ?>
+            <tr>
+                <td><?= $protocolo['protocol_matricula'] ?></td>
+                <td><?= $protocolo['protocol_nome'] ?></td>
+                <td><?= $protocolo['protocol_cpf'] ?></td>
+                <td><?= $protocolo['protocol_situacaoprofissional'] ?></td>
+                
+                <td>
+                    <button class="btn btn-action btn-view"><i class="fas fa-eye"></i></button>
+                    <button class="btn btn-action btn-download"><i class="fas fa-download"></i></button>
+                    <!-- Adicionando a classe "delete-protocol" e o data-id com o ID do protocolo -->
+                    <a href="<?=base_url('login/delete/'.$protocolo['protocol_id']) ?>" class="btn btn-action btn-delete delete-protocol" data-id="<?= $protocolo['protocol_id'] ?>"><i class="fas fa-trash-alt"></i></a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
-    <!-- Inclua o JavaScript do jQuery, do DataTables e do Bootstrap -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#protocolos_table').DataTable({
-                "pagingType": "simple_numbers",
-                "ordering": true,
-                "searching": true,
-                "info": false,
-                "lengthChange" : false,
-                "pageLength": 50,
-                "language": {
-                    "lengthMenu": "Mostrar _MENU_ registros por página",
-                    "zeroRecords": "Nenhum registro encontrado",
-                    "info": "Página _PAGE_ de _PAGES_",
-                    "infoEmpty": "Nenhum registro disponível",
-                    "infoFiltered": "(filtrado de _MAX_ registros totais)",
-                    "search": "Pesquisar:",
-                    "paginate": {
-                        "first": "Primeira",
-                        "last": "Última",
-                        "next": "Próxima",
-                        "previous": "Anterior"
-                    }
+<!-- Inclua o JavaScript do jQuery, do DataTables e do Bootstrap -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<!-- Inclua o script do SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $('#protocolos_table').DataTable({
+            "pagingType": "simple_numbers",
+            "ordering": true,
+            "searching": true,
+            "info": false,
+            "lengthChange" : false,
+            "pageLength": 50,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "Nenhum registro encontrado",
+                "info": "Página _PAGE_ de _PAGES_",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros totais)",
+                "search": "Pesquisar:",
+                "paginate": {
+                    "first": "Primeira",
+                    "last": "Última",
+                    "next": "Próxima",
+                    "previous": "Anterior"
                 }
-            });
-
-            $('.btn-delete').on('click', function() {
-                var protocolId = $(this).data('id');
-                if (confirm('Tem certeza que deseja excluir este protocolo?')) {
-                    // Redireciona para a rota de exclusão passando o ID do protocolo
-                    window.location.href = '<?= base_url("protocolo/delete/") ?>' + protocolId;
-                }
-            });
-
-
-            // Adiciona um efeito de pulso ao clicar no botão "Adicionar Protocolo"
+            }
         });
-    </script>
+
+        // Adiciona um efeito de pulso ao clicar no botão "Adicionar Protocolo"
+        $('.delete-protocol').on('click', function(e) {
+            e.preventDefault();
+            var protocolId = $(this).data('id');
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Você realmente deseja excluir este protocolo?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Se confirmado, redirecione para a URL de exclusão
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

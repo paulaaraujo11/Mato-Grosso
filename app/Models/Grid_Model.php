@@ -17,6 +17,7 @@ class Grid_model extends Model {
 
     public function deleteProtocolo($id)
     {
+        
         return $this->delete($id);
     }
 }

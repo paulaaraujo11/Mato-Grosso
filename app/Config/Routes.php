@@ -36,7 +36,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 	$routes->get('login/sucesso', 'Grid_Controller::index');
 	$routes->get('login/logout', 'Login_Controller::logout');
 });
-$routes->get('protocolo/delete/(:num)', 'Grid_Controller::delete/$1');
+$routes->get('login/delete/(:num)', 'Grid_Controller::delete/$1');
 $routes->post('login/verificar', 'Login_Controller::verificarCredenciais');
 $routes->get('/', 'Login_controller::index');
 $routes->get('form', 'Form_Controller::index');

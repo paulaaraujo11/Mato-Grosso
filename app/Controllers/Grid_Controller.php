@@ -17,7 +17,7 @@ class Grid_Controller extends Controller {
     {
         $protocoloModel = new Grid_Model();
         $protocoloModel->deleteProtocolo($id);
-        return redirect()->to(base_url('Grid'));
+        return redirect()->back()->with("status", "O Protocolo foi deletado");
     }
 
 }
