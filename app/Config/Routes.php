@@ -40,6 +40,12 @@ $routes->get('login/delete/(:num)', 'Grid_Controller::delete/$1');
 $routes->post('login/verificar', 'Login_Controller::verificarCredenciais');
 $routes->get('/', 'Login_controller::index');
 $routes->get('form', 'Form_Controller::index');
+$routes->get('form', 'Form_Controller::index');
+$routes->get('upload', 'Form_Controller::upload');
+$routes->get('image', 'Form_Controller::image');
+$routes->post('verificar', 'Form_Controller::verificar',['as' => 'verificar']);
+$routes->post('salvardocumento', 'Form_Controller::salvardocumento',['as' => 'salvardocumento']);
+$routes->post('salvarimagem', 'Form_Controller::salvarimagem',['as' => 'salvarimagem']);
 
 
 /**
