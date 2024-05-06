@@ -41,7 +41,7 @@ class Form_Controller extends Controller {
         $email = $this->request->getPost('email');
         $telefone = $this->request->getPost('telefone');
         $cpf = $this->request->getPost('cpf');
-        $cep = $this->request->getPost('cep');
+        $cep = str_replace('-', '', $this->request->getPost('cep'));
         $logradouro = $this->request->getPost('logradouro');
         $cidade = $this->request->getPost('cidade');
         $bairro = $this->request->getPost('bairro');
@@ -75,8 +75,8 @@ class Form_Controller extends Controller {
         return view('FormUploadImage', ['matricula' => $matricula]);
     }
 
-    public function salvarimagem(){
-        dd($_FILES);
+    public function salvarimagem()
+    {
         $matricula = $this->request->getPost('matricula');
         $subfolder = $matricula;
         $subfolderPath = FCPATH . "assets/" . $subfolder;
@@ -87,9 +87,17 @@ class Form_Controller extends Controller {
         $targetFile = $subfolderPath . '/' . $_FILES['imagem']['name'];
         move_uploaded_file($_FILES["imagem"]["tmp_name"], $targetFile);
 
-        // // Add code to display confirmation modal in the view
-        // $confirmationMessage = "Image added successfully!";
-        // return view('FormUploadImage', ['matricula' => $matricula, 'confirmationMessage' => $confirmationMessage]);
+        $codigo = '1234';
+        $model = new Autor_Model();
+        do {
+            $codigo = rand(100000, 999999);
+        } while ($model->checkCodigoExists($codigo));
+
+        $model->setCodigo($matricula, $codigo);
+
+        return $codigo;
+
+        return view('FormUploadImage', ['codigo' => $codigo,'matricula' => $matricula]);
     }
 
     function get_client_ip() {

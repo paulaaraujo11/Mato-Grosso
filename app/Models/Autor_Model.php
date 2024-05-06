@@ -31,6 +31,24 @@ class Autor_Model extends Model
         return $usuario->autor_valor;
     }
 
+    public function checkCodigoExists($cod){
+        $query = $this->db->table('protocolosrecebidos')
+            ->where('protocol_codigo', $cod)
+            ->get();
+
+        if ($query->getRow()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function setCodigo($matricula, $cod){
+        $this->db->table('protocolosrecebidos')
+            ->where('protocol_matricula', $matricula)
+            ->update(['protocol_codigo' => $cod]);
+    }
+
     public function criarProtocolo($nome, $email, $telefone, $cpf, $cep, $logradouro, $cidade, $bairro, $estado, $complemento, $ip,$rg,$exp,$civil,$numero){
         //dd($ip);
         $insertId = $this->db->table('protocolosrecebidos')->insert([
